@@ -1,0 +1,150 @@
+"""
+BUILD.bazel for @tinyland-inc/tinyland-composables (Svelte variant).
+
+Dual-mode build for packages containing .svelte.ts files (composables with runes).
+Uses svelte-package instead of plain tsc because runes need the Svelte compiler.
+
+  Standalone: cd packages/tinyland-composables && pnpm build
+  Monorepo:   bazel build //packages/tinyland-composables/...
+"""
+
+load("@aspect_rules_js//js:defs.bzl", "js_library", "js_run_binary", "js_test")
+load("@aspect_rules_js//npm:defs.bzl", "npm_package")
+load("@aspect_rules_ts//ts:defs.bzl", "ts_project")
+load("@npm//:defs.bzl", "npm_link_all_packages")
+
+# =============================================================================
+# npm link - makes node_modules available for this package
+# =============================================================================
+
+npm_link_all_packages(name = "node_modules")
+
+# =============================================================================
+# Svelte package build
+#
+# Uses svelte-package to compile .svelte.ts and .ts files into publishable
+# output. Required because composables use Svelte runes ($state, $derived, etc.)
+# =============================================================================
+
+js_run_binary(
+    name = "tinyland_composables_build",
+    tool = ":node_modules/@sveltejs/package/bin.js",
+    srcs = glob(
+        [
+            "src/**/*.ts",
+            "src/**/*.svelte.ts",
+        ],
+        exclude = [
+            "src/**/*.test.ts",
+            "src/**/*.spec.ts",
+        ],
+    ) + [
+        "package.json",
+        "tsconfig.json",
+        ":node_modules",
+        "//:tsconfig_base",
+    ],
+    args = [
+        "-i",
+        "src",
+        "-o",
+        "dist",
+    ],
+    out_dirs = ["dist"],
+    visibility = ["//visibility:public"],
+)
+
+js_library(
+    name = "tinyland_composables",
+    srcs = [":tinyland_composables_build"],
+    visibility = ["//visibility:public"],
+)
+
+# =============================================================================
+# npm package target
+# =============================================================================
+
+npm_package(
+    name = "pkg",
+    srcs = [
+        "package.json",
+        "LICENSE",
+        ":tinyland_composables",
+    ],
+    package = "@tinyland-inc/tinyland-composables",
+    version = "0.1.0",
+    visibility = ["//visibility:public"],
+)
+
+# =============================================================================
+# Test targets
+# =============================================================================
+
+ts_project(
+    name = "tinyland_composables_test_lib",
+    srcs = glob(["tests/**/*.test.ts"]),
+    declaration = False,
+    source_map = True,
+    tsconfig = ":tsconfig.json",
+    transpiler = "tsc",
+    deps = [
+        ":tinyland_composables",
+        ":node_modules",
+        ":node_modules/vitest",
+    ],
+)
+
+js_test(
+    name = "test",
+    data = [
+        ":tinyland_composables",
+        ":tinyland_composables_test_lib",
+        ":node_modules",
+        ":node_modules/vitest",
+        "vitest.config.ts",
+    ],
+    entry_point = ":node_modules/vitest/vitest.mjs",
+    args = [
+        "run",
+        "--reporter=verbose",
+        "--config",
+        "$(rootpath vitest.config.ts)",
+    ],
+    log_level = "info",
+    visibility = ["//visibility:public"],
+)
+
+# =============================================================================
+# Typecheck target
+# =============================================================================
+
+js_run_binary(
+    name = "typecheck",
+    tool = ":node_modules/svelte-check/bin/svelte-check",
+    srcs = glob([
+        "src/**/*.ts",
+        "src/**/*.svelte.ts",
+    ]) + [
+        "tsconfig.json",
+        ":node_modules",
+        "//:tsconfig_base",
+    ],
+    args = [
+        "--tsconfig",
+        "tsconfig.json",
+    ],
+    visibility = ["//visibility:public"],
+)
+
+# =============================================================================
+# Exported files for downstream consumers
+# =============================================================================
+
+exports_files(
+    [
+        "package.json",
+        "tsconfig.json",
+        "vitest.config.ts",
+    ],
+    visibility = ["//visibility:public"],
+)
