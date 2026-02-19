@@ -28,7 +28,7 @@ export function useThemeStyles(themeState: ThemeState) {
 	let cssVariables = $state<Record<string, string>>({});
 
 	// Generate dynamic styles based on theme
-	let dynamicStyles = $derived(() => {
+	let dynamicStyles = $derived.by(() => {
 		const theme = themeState.currentTheme;
 		const isDark = themeState.darkMode;
 
@@ -210,8 +210,8 @@ export function useThemeStyles(themeState: ThemeState) {
 	// Watch for theme changes and apply styles
 	$effect(() => {
 		// Re-apply styles when theme or dark mode changes
-		const _theme = themeState.currentTheme;
-		const _isDark = themeState.darkMode;
+		void themeState.currentTheme;
+		void themeState.darkMode;
 
 		if (browser) {
 			applyDynamicStyles();

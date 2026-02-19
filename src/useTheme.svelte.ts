@@ -27,7 +27,7 @@ export function useTheme() {
 	let isLoading = $state<boolean>(false);
 
 	// Derived theme colors from CSS variables
-	let themeColors = $derived<ThemeColors>(() => {
+	let themeColors = $derived.by<ThemeColors>(() => {
 		if (!browser) {
 			return {
 				primary: '',
