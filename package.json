@@ -1,5 +1,5 @@
 {
-  "name": "@tinyland-inc/tinyland-composables",
+  "name": "@tummycrypt/tinyland-composables",
   "version": "0.1.0",
   "description": "Svelte 5 rune-based composables for reactive state management, lifecycle utilities, theming, and Web Worker synchronization",
   "type": "module",
@@ -55,7 +55,7 @@
     }
   },
   "dependencies": {
-    "@tinyland-inc/sveltekit-shims": "workspace:*"
+    "@tummycrypt/sveltekit-shims": "workspace:*"
   },
   "devDependencies": {
     "@sveltejs/package": "^2.0.0",
@@ -68,5 +68,9 @@
   },
   "engines": {
     "node": ">=22.0.0"
+  },
+  "publishConfig": {
+    "registry": "https://registry.npmjs.org/",
+    "access": "public"
   }
 }

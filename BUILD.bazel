@@ -1,5 +1,5 @@
 """
-BUILD.bazel for @tinyland-inc/tinyland-composables (Svelte variant).
+BUILD.bazel for @tummycrypt/tinyland-composables (Svelte variant).
 
 Dual-mode build for packages containing .svelte.ts files (composables with runes).
 Uses svelte-package instead of plain tsc because runes need the Svelte compiler.
@@ -71,7 +71,7 @@ npm_package(
         "LICENSE",
         ":tinyland_composables",
     ],
-    package = "@tinyland-inc/tinyland-composables",
+    package = "@tummycrypt/tinyland-composables",
     version = "0.1.0",
     visibility = ["//visibility:public"],
 )

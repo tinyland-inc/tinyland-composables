@@ -1,5 +1,5 @@
 /**
- * @tinyland-inc/tinyland-composables
+ * @tummycrypt/tinyland-composables
  *
  * Svelte 5 rune-based composables for reactive state management,
  * lifecycle utilities, theming, and Web Worker synchronization.
