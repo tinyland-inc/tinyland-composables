@@ -11,13 +11,11 @@ Uses svelte-package instead of plain tsc because runes need the Svelte compiler.
 load("@aspect_rules_js//js:defs.bzl", "js_library", "js_run_binary", "js_test")
 load("@aspect_rules_js//npm:defs.bzl", "npm_package")
 load("@aspect_rules_ts//ts:defs.bzl", "ts_project")
-load("@npm//:defs.bzl", "npm_link_all_packages")
 
 # =============================================================================
 # npm link - makes node_modules available for this package
 # =============================================================================
 
-npm_link_all_packages(name = "node_modules")
 
 # =============================================================================
 # Svelte package build
@@ -28,7 +26,7 @@ npm_link_all_packages(name = "node_modules")
 
 js_run_binary(
     name = "tinyland_composables_build",
-    tool = ":node_modules/@sveltejs/package/bin.js",
+    tool = "//:node_modules/@sveltejs/package/bin.js",
     srcs = glob(
         [
             "src/**/*.ts",
@@ -41,7 +39,7 @@ js_run_binary(
     ) + [
         "package.json",
         "tsconfig.json",
-        ":node_modules",
+        "//:node_modules",
         "//:tsconfig_base",
     ],
     args = [
@@ -89,8 +87,8 @@ ts_project(
     transpiler = "tsc",
     deps = [
         ":tinyland_composables",
-        ":node_modules",
-        ":node_modules/vitest",
+        "//:node_modules",
+        "//:node_modules/vitest",
     ],
 )
 
@@ -99,11 +97,11 @@ js_test(
     data = [
         ":tinyland_composables",
         ":tinyland_composables_test_lib",
-        ":node_modules",
-        ":node_modules/vitest",
+        "//:node_modules",
+        "//:node_modules/vitest",
         "vitest.config.ts",
     ],
-    entry_point = ":node_modules/vitest/vitest.mjs",
+    entry_point = "//:node_modules/vitest/vitest.mjs",
     args = [
         "run",
         "--reporter=verbose",
@@ -120,13 +118,13 @@ js_test(
 
 js_run_binary(
     name = "typecheck",
-    tool = ":node_modules/svelte-check/bin/svelte-check",
+    tool = "//:node_modules/svelte-check/bin/svelte-check",
     srcs = glob([
         "src/**/*.ts",
         "src/**/*.svelte.ts",
     ]) + [
         "tsconfig.json",
-        ":node_modules",
+        "//:node_modules",
         "//:tsconfig_base",
     ],
     args = [
