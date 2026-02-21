@@ -4,7 +4,7 @@
   "description": "Svelte 5 rune-based composables for reactive state management, lifecycle utilities, theming, and Web Worker synchronization",
   "type": "module",
   "license": "Zlib AND LicenseRef-Tinyland-Proprietary",
-  "private": true,
+
   "main": "./dist/index.js",
   "module": "./dist/index.js",
   "types": "./dist/index.d.ts",
