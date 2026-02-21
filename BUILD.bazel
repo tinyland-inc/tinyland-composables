@@ -26,7 +26,7 @@ load("@aspect_rules_ts//ts:defs.bzl", "ts_project")
 
 js_run_binary(
     name = "tinyland_composables_build",
-    tool = "//:node_modules/@sveltejs/package/svelte-package.js",
+    tool = "//:svelte_package_bin",
     srcs = glob(
         [
             "src/**/*.ts",
@@ -40,7 +40,7 @@ js_run_binary(
         "package.json",
         "tsconfig.json",
         "//:node_modules",
-        "//:tsconfig_base",
+        "//packages:tsconfig_base",
     ],
     args = [
         "-i",
@@ -101,7 +101,7 @@ js_test(
         "//:node_modules/vitest",
         "vitest.config.ts",
     ],
-    entry_point = "//:node_modules/vitest/vitest.mjs",
+    entry_point = "//:vitest_bin",
     args = [
         "run",
         "--reporter=verbose",
@@ -118,14 +118,14 @@ js_test(
 
 js_run_binary(
     name = "typecheck",
-    tool = "//:node_modules/svelte-check/bin/svelte-check",
+    tool = "//:svelte_check_bin",
     srcs = glob([
         "src/**/*.ts",
         "src/**/*.svelte.ts",
     ]) + [
         "tsconfig.json",
         "//:node_modules",
-        "//:tsconfig_base",
+        "//packages:tsconfig_base",
     ],
     args = [
         "--tsconfig",
