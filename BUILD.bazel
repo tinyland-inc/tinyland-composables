@@ -8,7 +8,7 @@ Uses svelte-package instead of plain tsc because runes need the Svelte compiler.
   Monorepo:   bazel build //packages/tinyland-composables/...
 """
 
-load("@aspect_rules_js//js:defs.bzl", "js_library", "js_run_binary", "js_test")
+load("@aspect_rules_js//js:defs.bzl", "js_library", "js_run_binary")
 load("@aspect_rules_js//npm:defs.bzl", "npm_package")
 load("@aspect_rules_ts//ts:defs.bzl", "ts_project")
 load("@npm//:defs.bzl", "npm_link_all_packages")
@@ -82,29 +82,15 @@ npm_package(
 # Test targets
 # =============================================================================
 
-ts_project(
-    name = "tinyland_composables_test_lib",
-    srcs = glob(["tests/**/*.test.ts"]),
-    declaration = False,
-    source_map = True,
-    tsconfig = ":tsconfig.json",
-    transpiler = "tsc",
-    deps = [
-        ":tinyland_composables",
-        ":node_modules",
-        ":node_modules/vitest",
-    ],
-)
-
 vitest_bin.vitest_test(
     name = "test",
     data = [
-        ":tinyland_composables",
-        ":tinyland_composables_test_lib",
         ":node_modules",
+        "tsconfig.json",
+        "//packages:tsconfig.base.json",
         ":node_modules/vitest",
         "vitest.config.ts",
-    ],
+    ] + glob(["src/**/*.ts"]) + glob(["tests/**/*.test.ts", "tests/**/*.ts"]),
     args = [
         "run",
         "--reporter=verbose",
