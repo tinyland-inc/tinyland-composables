@@ -1,16 +1,16 @@
-/**
- * Tests for useEditorQueue composable
- *
- * Validates debounce behavior and serial execution without requiring
- * Svelte component context. Tests the core queue logic directly.
- */
+
+
+
+
+
+
 
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 
 describe('Editor Queue - debounce behavior', () => {
 	beforeEach(() => {
 		vi.useFakeTimers();
-		// Mock crypto.randomUUID for deterministic IDs
+		
 		vi.stubGlobal('crypto', {
 			randomUUID: vi.fn(() => `uuid-${Math.random().toString(36).slice(2)}`)
 		});
@@ -51,18 +51,18 @@ describe('Editor Queue - debounce behavior', () => {
 		const executeFn2 = vi.fn(async () => {});
 		const executeFn3 = vi.fn(async () => {});
 
-		// Rapid enqueue -- only last should survive debounce
+		
 		enqueue({ type: 'autosave', execute: executeFn1 });
 		enqueue({ type: 'autosave', execute: executeFn2 });
 		enqueue({ type: 'autosave', execute: executeFn3 });
 
-		// Nothing in queue yet (all debounced)
+		
 		expect(queue.length).toBe(0);
 
-		// Advance past debounce
+		
 		vi.advanceTimersByTime(DEBOUNCE_MS + 100);
 
-		// Only last operation should be in queue
+		
 		expect(queue.length).toBe(1);
 		expect(queue[0].execute).toBe(executeFn3);
 	});
@@ -90,7 +90,7 @@ describe('Editor Queue - debounce behavior', () => {
 
 		enqueue({ type: 'publish' }, false);
 
-		// Should be in queue immediately
+		
 		expect(queue.length).toBe(1);
 		expect(queue[0].type).toBe('publish');
 	});
@@ -120,7 +120,7 @@ describe('Editor Queue - serial execution', () => {
 			}
 		];
 
-		// Process serially
+		
 		for (const op of operations) {
 			await op.execute();
 		}
@@ -133,7 +133,7 @@ describe('Editor Queue - serial execution', () => {
 
 		const operations = [
 			{
-				execute: async () => { /* success */ },
+				execute: async () => {  },
 				onError: (e: unknown) => errors.push({ error: e })
 			},
 			{
@@ -141,7 +141,7 @@ describe('Editor Queue - serial execution', () => {
 				onError: (e: unknown) => errors.push({ error: e })
 			},
 			{
-				execute: async () => { /* success */ },
+				execute: async () => {  },
 				onError: (e: unknown) => errors.push({ error: e })
 			}
 		];
@@ -209,7 +209,7 @@ describe('Editor Queue - cancel operations', () => {
 		debounceTimers.set('autosave', setTimeout(callback, 1500));
 		debounceTimers.set('draft', setTimeout(callback, 1500));
 
-		// Cancel all
+		
 		debounceTimers.forEach((timer) => clearTimeout(timer));
 		debounceTimers.clear();
 

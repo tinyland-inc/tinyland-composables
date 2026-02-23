@@ -1,9 +1,9 @@
-/**
- * Tests for consent state types and logic
- *
- * Validates consent state management without requiring Svelte component
- * context. Tests the type contracts and state transition logic.
- */
+
+
+
+
+
+
 
 import { describe, it, expect } from 'vitest';
 import type {
@@ -103,22 +103,22 @@ describe('Consent State - step navigation', () => {
 			const currentIndex = STEP_ORDER.indexOf(currentStep);
 			if (currentIndex === -1 || currentIndex === STEP_ORDER.length - 1) return;
 
-			// Check canProceed
+			
 			if (currentStep === 'privacy' && !ageVerified) return;
 
 			currentStep = STEP_ORDER[currentIndex + 1];
 		}
 
-		nextStep(false); // welcome -> privacy (always allowed)
+		nextStep(false); 
 		expect(currentStep).toBe('privacy');
 
-		nextStep(false); // privacy -> preferences (blocked, not age verified)
+		nextStep(false); 
 		expect(currentStep).toBe('privacy');
 
-		nextStep(true); // privacy -> preferences (allowed)
+		nextStep(true); 
 		expect(currentStep).toBe('preferences');
 
-		nextStep(true); // preferences -> (blocked, last step)
+		nextStep(true); 
 		expect(currentStep).toBe('preferences');
 	});
 
@@ -138,7 +138,7 @@ describe('Consent State - step navigation', () => {
 		expect(currentStep).toBe('welcome');
 
 		prevStep();
-		expect(currentStep).toBe('welcome'); // Can't go before first
+		expect(currentStep).toBe('welcome'); 
 	});
 });
 
@@ -226,7 +226,7 @@ describe('Consent State - restore from Tempo', () => {
 			}
 		};
 
-		// Simulate restore
+		
 		let categories: ConsentCategories = {
 			essential: true,
 			preferences: false,

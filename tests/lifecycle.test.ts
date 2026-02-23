@@ -1,10 +1,10 @@
-/**
- * Tests for useLifecycle composable
- *
- * Note: useLifecycle depends on Svelte lifecycle hooks (onMount, onDestroy)
- * which require a Svelte component context. These tests validate the
- * standalone utility functions that can be tested outside component context.
- */
+
+
+
+
+
+
+
 
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 
@@ -35,15 +35,15 @@ describe('useLifecycle - timer cleanup', () => {
 			clearTimeout(timerId);
 		});
 
-		// Timer should not have fired yet
+		
 		expect(callback).not.toHaveBeenCalled();
 		expect(cleanups.size).toBe(1);
 
-		// Manually cancel via returned cleanup
+		
 		removeCleanup();
 		expect(cleanups.size).toBe(0);
 
-		// Advance time -- callback should NOT fire (timer was cleared)
+		
 		vi.advanceTimersByTime(1500);
 		expect(callback).not.toHaveBeenCalled();
 	});
@@ -71,15 +71,15 @@ describe('useLifecycle - timer cleanup', () => {
 			clearInterval(intervalId);
 		});
 
-		// Let a few intervals fire
+		
 		vi.advanceTimersByTime(350);
 		expect(callback).toHaveBeenCalledTimes(3);
 
-		// Run cleanup
+		
 		cleanupAll();
 		expect(cleanups.size).toBe(0);
 
-		// Advance time -- no more calls
+		
 		vi.advanceTimersByTime(500);
 		expect(callback).toHaveBeenCalledTimes(3);
 	});
@@ -131,7 +131,7 @@ describe('useLifecycle - debounce logic', () => {
 	it('should debounce rapid calls', () => {
 		const fn = vi.fn();
 
-		// Inline debounce implementation matching the composable
+		
 		let timeoutId: ReturnType<typeof setTimeout> | null = null;
 		const debounced = (...args: any[]) => {
 			if (timeoutId !== null) clearTimeout(timeoutId);
@@ -145,12 +145,12 @@ describe('useLifecycle - debounce logic', () => {
 		debounced('b');
 		debounced('c');
 
-		// Should not have fired yet
+		
 		expect(fn).not.toHaveBeenCalled();
 
 		vi.advanceTimersByTime(200);
 
-		// Should have fired once with last call args
+		
 		expect(fn).toHaveBeenCalledTimes(1);
 		expect(fn).toHaveBeenCalledWith('c');
 	});
@@ -205,7 +205,7 @@ describe('useLifecycle - event listener cleanup', () => {
 
 		expect(target.addEventListener).toHaveBeenCalledWith('click', listener);
 
-		// Cleanup
+		
 		cleanups.forEach(fn => fn());
 		cleanups.clear();
 
