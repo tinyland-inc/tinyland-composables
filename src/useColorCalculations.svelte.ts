@@ -1,32 +1,32 @@
-/**
- * Color Calculations Composable
- *
- * Reactive color calculations using Svelte 5 runes.
- * Accepts color utility functions via dependency injection to avoid
- * coupling to specific color library implementations.
- */
+
+
+
+
+
+
+
 
 import { browser } from './browser.js';
 import type { RGB, HSL, ColorContrast, ColorUtilities } from './types.js';
 
 export type { RGB, HSL, ColorContrast };
 
-/**
- * Create a color calculations composable with injected color utilities.
- *
- * @param utils - Color utility functions. If omitted, a default set of
- *   inline implementations is used (hex/rgb parsing only, no OKLCH).
- */
+
+
+
+
+
+
 export function useColorCalculations(utils?: ColorUtilities) {
-	// Inline fallback implementations for standalone use
+	
 	const defaultUtils: ColorUtilities = {
 		parseColor(color: string): RGB | null {
-			// Handle rgb()/rgba() format
+			
 			const rgbMatch = color.match(/rgba?\((\d+),\s*(\d+),\s*(\d+)/);
 			if (rgbMatch) {
 				return { r: parseInt(rgbMatch[1]), g: parseInt(rgbMatch[2]), b: parseInt(rgbMatch[3]) };
 			}
-			// Handle hex format
+			
 			const hexResult = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(color);
 			if (hexResult) {
 				return {
@@ -119,7 +119,7 @@ export function useColorCalculations(utils?: ColorUtilities) {
 		const parsed = u.parseColor(color);
 		if (parsed) return parsed;
 
-		// Fallback: Handle CSS color names via temporary element (browser only)
+		
 		if (browser) {
 			const div = document.createElement('div');
 			div.style.color = color;

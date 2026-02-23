@@ -1,7 +1,7 @@
-/**
- * Bulk Selection Composable
- * Manages selection state for bulk operations
- */
+
+
+
+
 
 export function useBulkSelection<T extends { id: string } | { slug: string }>(
 	getItemId: (item: T) => string = (item) => ('id' in item ? item.id : (item as any).slug)
@@ -61,7 +61,7 @@ export function useBulkSelection<T extends { id: string } | { slug: string }>(
 	}
 
 	return {
-		// State
+		
 		get selectedIds() {
 			return selectedIds;
 		},
@@ -72,7 +72,7 @@ export function useBulkSelection<T extends { id: string } | { slug: string }>(
 			return hasSelection;
 		},
 
-		// Actions
+		
 		select,
 		deselect,
 		toggle,

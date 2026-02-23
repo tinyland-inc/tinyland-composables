@@ -1,14 +1,14 @@
-/**
- * Theme Composable
- *
- * Reactive theme composable for reading theme colors from CSS variables,
- * loading theme CSS, and managing dark mode state.
- */
+
+
+
+
+
+
 
 import { browser } from './browser.js';
 import type { ThemeConfig } from './types.js';
 
-/** Theme colors based on CSS variables */
+
 export interface ThemeColors {
 	primary: string;
 	secondary: string;
@@ -26,7 +26,7 @@ export function useTheme() {
 	let loadedThemes = $state<Set<string>>(new Set(['tinyland']));
 	let isLoading = $state<boolean>(false);
 
-	// Derived theme colors from CSS variables
+	
 	let themeColors = $derived.by<ThemeColors>(() => {
 		if (!browser) {
 			return {
@@ -54,7 +54,7 @@ export function useTheme() {
 		};
 	});
 
-	// Color utilities
+	
 	function hexToRgb(hex: string): { r: number; g: number; b: number } | null {
 		const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
 		return result ? {
@@ -93,7 +93,7 @@ export function useTheme() {
 		};
 	}
 
-	// Contrast ratio calculation
+	
 	function getContrastRatio(color1: string, color2: string): number {
 		const getLuminance = (rgb: string) => {
 			const match = rgb.match(/\d+/g);
@@ -123,7 +123,7 @@ export function useTheme() {
 		return ratio >= 4.5;
 	});
 
-	// Load theme CSS dynamically
+	
 	async function loadThemeCSS(themeName: string) {
 		if (!browser) return;
 
@@ -158,7 +158,7 @@ export function useTheme() {
 		}
 	}
 
-	// Set theme
+	
 	async function setTheme(themeName: string) {
 		if (!browser || currentTheme === themeName) return;
 
@@ -189,7 +189,7 @@ export function useTheme() {
 		});
 	}
 
-	// Toggle dark mode
+	
 	function toggleDarkMode() {
 		if (!browser) return;
 
@@ -213,7 +213,7 @@ export function useTheme() {
 		}, 300);
 	}
 
-	// Initialize theme from server-provided settings
+	
 	async function init(serverSettings?: { theme?: string; darkMode?: boolean }) {
 		if (!browser) return;
 
@@ -239,7 +239,7 @@ export function useTheme() {
 	}
 
 	return {
-		// State
+		
 		get currentTheme() { return currentTheme; },
 		get darkMode() { return darkMode; },
 		get themes() { return themes; },
@@ -247,7 +247,7 @@ export function useTheme() {
 		get themeColors() { return themeColors; },
 		get isAccessible() { return isAccessible; },
 
-		// Methods
+		
 		init,
 		setTheme,
 		toggleDarkMode,

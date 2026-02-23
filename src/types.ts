@@ -1,15 +1,15 @@
-/**
- * Type definitions for tinyland-composables
- *
- * Local copies of types that were previously imported from $lib/ paths.
- * These are kept minimal -- only the types actually used by composables.
- */
 
-// =============================================================================
-// Color types (from $lib/utils/color/types)
-// =============================================================================
 
-/** RGB color with values 0-255 */
+
+
+
+
+
+
+
+
+
+
 export interface RGB {
 	r: number;
 	g: number;
@@ -17,7 +17,7 @@ export interface RGB {
 	a?: number;
 }
 
-/** RGBA color (explicit alpha channel) */
+
 export interface RGBA {
 	r: number;
 	g: number;
@@ -25,15 +25,15 @@ export interface RGBA {
 	a: number;
 }
 
-/** HSL color space */
+
 export interface HSL {
-	h: number; // 0-360
-	s: number; // 0-100
-	l: number; // 0-100
+	h: number; 
+	s: number; 
+	l: number; 
 	a?: number;
 }
 
-/** Color contrast analysis result */
+
 export interface ColorContrast {
 	ratio: number;
 	passes: {
@@ -44,11 +44,11 @@ export interface ColorContrast {
 	};
 }
 
-// =============================================================================
-// Color utility function signatures (for dependency injection)
-// =============================================================================
 
-/** Functions expected by useColorCalculations */
+
+
+
+
 export interface ColorUtilities {
 	parseColor: (color: string) => RGB | null;
 	hexToRgb: (hex: string) => RGB | null;
@@ -59,11 +59,11 @@ export interface ColorUtilities {
 	getContrastRatio: (color1: RGB | string, color2: RGB | string) => number;
 }
 
-// =============================================================================
-// Theme types (from $lib/types/theme)
-// =============================================================================
 
-/** Theme configuration */
+
+
+
+
 export interface ThemeConfig {
 	name: string;
 	label?: string;
@@ -75,25 +75,25 @@ export interface ThemeConfig {
 	source?: string;
 }
 
-// =============================================================================
-// Theme state interface (for useThemeStyles dependency injection)
-// =============================================================================
 
-/**
- * Minimal theme state required by useThemeStyles.
- * Replaces the direct import of themeStore singleton.
- */
+
+
+
+
+
+
+
 export interface ThemeState {
 	readonly currentTheme: string;
 	readonly darkMode: boolean;
 	readonly hasVectors: boolean;
 }
 
-// =============================================================================
-// Consent types (from $lib/components/consent/types)
-// =============================================================================
 
-/** Five-category consent system aligned with GDPR requirements */
+
+
+
+
 export interface ConsentCategories {
 	essential: boolean;
 	preferences: boolean;
@@ -102,10 +102,10 @@ export interface ConsentCategories {
 	performance: boolean;
 }
 
-/** Consent modal step navigation */
+
 export type ConsentStep = 'welcome' | 'privacy' | 'preferences';
 
-/** Settings that can be restored from Tempo fingerprint history */
+
 export interface RestorableSettings {
 	lastKnownLocation: {
 		city: string | null;
@@ -145,7 +145,7 @@ export interface RestorableSettings {
 	consentCategories?: ConsentCategories;
 }
 
-/** Full consent submission payload */
+
 export interface ConsentSubmission {
 	categories: ConsentCategories;
 	preciseLocation: boolean;

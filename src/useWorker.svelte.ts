@@ -1,18 +1,18 @@
-/**
- * useWorker - Svelte 5 runes-based Web Worker synchronization
- *
- * Implements push-pull reactivity model for worker communication:
- * - PUSH: State changes automatically send messages to worker
- * - PULL: Worker results update reactive state
- * - LIFECYCLE: $effect manages worker creation/cleanup
- * - DERIVED: Computed values from worker data
- */
+
+
+
+
+
+
+
+
+
 
 import { browser } from './browser.js';
 
-// ============================================================================
-// Types
-// ============================================================================
+
+
+
 
 export interface WorkerMessage<T = unknown> {
 	id: number;
@@ -34,9 +34,9 @@ export interface WorkerConfig {
 	errorHandler?: (error: Error) => void;
 }
 
-// ============================================================================
-// Main Composable
-// ============================================================================
+
+
+
 
 export function useWorker<TRequest = unknown, TResponse = unknown>(config: WorkerConfig) {
 	let worker = $state<Worker | null>(null);
@@ -51,9 +51,9 @@ export function useWorker<TRequest = unknown, TResponse = unknown>(config: Worke
 		{ resolve: (value: TResponse) => void; reject: (error: Error) => void }
 	>();
 
-	// ============================================================================
-	// Lifecycle Management
-	// ============================================================================
+	
+	
+	
 
 	$effect(() => {
 		if (!browser || config.enabled === false) {
@@ -92,9 +92,9 @@ export function useWorker<TRequest = unknown, TResponse = unknown>(config: Worke
 		};
 	});
 
-	// ============================================================================
-	// Message Handling
-	// ============================================================================
+	
+	
+	
 
 	function handleMessage(event: MessageEvent<WorkerResponse<TResponse>>) {
 		const { id, success, data, error } = event.data;
@@ -123,9 +123,9 @@ export function useWorker<TRequest = unknown, TResponse = unknown>(config: Worke
 		}
 	}
 
-	// ============================================================================
-	// Worker Communication
-	// ============================================================================
+	
+	
+	
 
 	async function sendMessage(type: string, payload: TRequest): Promise<TResponse> {
 		if (!worker || !isReady) {
@@ -185,9 +185,9 @@ export function useWorker<TRequest = unknown, TResponse = unknown>(config: Worke
 		}
 	}
 
-	// ============================================================================
-	// Reactive Utilities - Push-Pull Pattern
-	// ============================================================================
+	
+	
+	
 
 	function createReactiveState<U>(
 		type: string,
@@ -230,9 +230,9 @@ export function useWorker<TRequest = unknown, TResponse = unknown>(config: Worke
 		return { data, loading, error };
 	}
 
-	// ============================================================================
-	// Return API
-	// ============================================================================
+	
+	
+	
 
 	return {
 		get worker() { return worker; },
@@ -249,9 +249,9 @@ export function useWorker<TRequest = unknown, TResponse = unknown>(config: Worke
 	};
 }
 
-// ============================================================================
-// Specialized Workers for Text Processing
-// ============================================================================
+
+
+
 
 export function useTextWorker(config: WorkerConfig) {
 	const baseWorker = useWorker(config);

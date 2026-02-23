@@ -1,29 +1,29 @@
-/**
- * Draft Persistence Composable
- *
- * Handles loading and saving drafts via persistent file storage.
- * Integrates with useEditorQueue for debounced, conflict-aware saving.
- *
- * @example
- * ```typescript
- * const queue = useEditorQueue();
- * const drafts = useDraftPersistence({
- *   contentType: 'blog',
- *   slug: 'my-post',
- *   authorHandle: 'jessie',
- *   queue
- * });
- *
- * // Load existing draft
- * const draft = await drafts.loadDraft();
- *
- * // Save changes (queued and debounced)
- * drafts.saveDraft({ title: 'New Title' }, 'Content here');
- *
- * // Delete draft after publish
- * await drafts.deleteDraft();
- * ```
- */
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 import type { useEditorQueue } from './useEditorQueue.svelte.js';
 
@@ -41,15 +41,15 @@ interface DraftData {
 	content: string;
 }
 
-/**
- * Create a draft persistence manager
- *
- * @param options Configuration options
- * @param options.contentType Type of content (blog, event, product, etc.)
- * @param options.slug Content slug/identifier
- * @param options.authorHandle Author's handle
- * @param options.queue Editor operation queue for debouncing
- */
+
+
+
+
+
+
+
+
+
 export function useDraftPersistence(options: {
 	contentType: string;
 	slug: string;
@@ -65,9 +65,9 @@ export function useDraftPersistence(options: {
 		localVersion: 0
 	});
 
-	/**
-	 * Load existing draft from server
-	 */
+	
+
+
 	async function loadDraft(): Promise<DraftData | null> {
 		try {
 			const params = new URLSearchParams({
@@ -100,9 +100,9 @@ export function useDraftPersistence(options: {
 		}
 	}
 
-	/**
-	 * Save draft (queued and debounced via editor queue)
-	 */
+	
+
+
 	function saveDraft(frontmatter: Record<string, unknown>, content: string): void {
 		state.isDirty = true;
 
@@ -160,9 +160,9 @@ export function useDraftPersistence(options: {
 		});
 	}
 
-	/**
-	 * Delete draft from server (e.g., after publish)
-	 */
+	
+
+
 	async function deleteDraft(): Promise<void> {
 		try {
 			const params = new URLSearchParams({
@@ -196,7 +196,7 @@ export function useDraftPersistence(options: {
 	}
 
 	return {
-		// State (read-only)
+		
 		get isDirty() {
 			return state.isDirty;
 		},
@@ -216,7 +216,7 @@ export function useDraftPersistence(options: {
 			return state.serverVersion;
 		},
 
-		// Actions
+		
 		loadDraft,
 		saveDraft,
 		deleteDraft,

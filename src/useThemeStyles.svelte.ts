@@ -1,38 +1,38 @@
-/**
- * Theme Styles Composable
- *
- * Dynamic style generation using Svelte 5 runes.
- *
- * REFACTORED: Accepts theme state as a parameter instead of importing
- * themeStore directly. This breaks the circular dependency between
- * stores and composables.
- *
- * @example
- * ```typescript
- * import { themeStore } from '$lib/stores/themeStore.svelte';
- *
- * // Pass the store as the theme state parameter
- * const styles = useThemeStyles({
- *   get currentTheme() { return themeStore.currentTheme; },
- *   get darkMode() { return themeStore.darkMode; },
- *   get hasVectors() { return themeStore.hasVectors; }
- * });
- * ```
- */
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 import { browser } from './browser.js';
 import type { ThemeState } from './types.js';
 
 export function useThemeStyles(themeState: ThemeState) {
-	// Reactive CSS variable values
+	
 	let cssVariables = $state<Record<string, string>>({});
 
-	// Generate dynamic styles based on theme
+	
 	let dynamicStyles = $derived.by(() => {
 		const theme = themeState.currentTheme;
 		const isDark = themeState.darkMode;
 
-		// Base transitions for theme changes
+		
 		const transitions = `
 			.theme-transitioning * {
 				transition: background-color 300ms ease-in-out,
@@ -43,7 +43,7 @@ export function useThemeStyles(themeState: ThemeState) {
 			}
 		`;
 
-		// Glassmorphism effects
+		
 		const glassEffects = `
 			.glass {
 				backdrop-filter: blur(16px) saturate(180%);
@@ -79,7 +79,7 @@ export function useThemeStyles(themeState: ThemeState) {
 			}
 		`;
 
-		// Theme-specific enhancements
+		
 		const themeEnhancements = theme === 'high-contrast' ? `
 			/* High contrast mode enhancements */
 			.btn:focus,
@@ -101,7 +101,7 @@ export function useThemeStyles(themeState: ThemeState) {
 			}
 		` : '';
 
-		// Vector background styles
+		
 		const vectorStyles = themeState.hasVectors ? `
 			.vectors-background {
 				position: fixed;
@@ -119,7 +119,7 @@ export function useThemeStyles(themeState: ThemeState) {
 			}
 		` : '';
 
-		// Hamburger menu animations
+		
 		const hamburgerStyles = `
 			.hamburger-line {
 				background-color: currentColor;
@@ -137,7 +137,7 @@ export function useThemeStyles(themeState: ThemeState) {
 			}
 		`;
 
-		// Accessibility scorer styles
+		
 		const accessibilityStyles = `
 			.accessibility-scorer {
 				backdrop-filter: blur(12px) saturate(180%);
@@ -156,7 +156,7 @@ export function useThemeStyles(themeState: ThemeState) {
 		`;
 	});
 
-	// Get computed CSS variable value
+	
 	function getCSSVariable(varName: string): string {
 		if (!browser) return '';
 
@@ -165,7 +165,7 @@ export function useThemeStyles(themeState: ThemeState) {
 		return computed.getPropertyValue(varName).trim();
 	}
 
-	// Set CSS variable
+	
 	function setCSSVariable(varName: string, value: string) {
 		if (!browser) return;
 
@@ -173,7 +173,7 @@ export function useThemeStyles(themeState: ThemeState) {
 		cssVariables[varName] = value;
 	}
 
-	// Batch update CSS variables
+	
 	function updateCSSVariables(variables: Record<string, string>) {
 		if (!browser) return;
 
@@ -185,7 +185,7 @@ export function useThemeStyles(themeState: ThemeState) {
 		cssVariables = { ...cssVariables, ...variables };
 	}
 
-	// Create style element with dynamic content
+	
 	function createStyleElement(id: string, content: string): HTMLStyleElement | null {
 		if (!browser) return null;
 
@@ -202,14 +202,14 @@ export function useThemeStyles(themeState: ThemeState) {
 		return style;
 	}
 
-	// Apply dynamic styles
+	
 	function applyDynamicStyles() {
 		createStyleElement('theme-dynamic-styles', dynamicStyles);
 	}
 
-	// Watch for theme changes and apply styles
+	
 	$effect(() => {
-		// Re-apply styles when theme or dark mode changes
+		
 		void themeState.currentTheme;
 		void themeState.darkMode;
 
@@ -219,11 +219,11 @@ export function useThemeStyles(themeState: ThemeState) {
 	});
 
 	return {
-		// State
+		
 		get cssVariables() { return cssVariables; },
 		get dynamicStyles() { return dynamicStyles; },
 
-		// Methods
+		
 		getCSSVariable,
 		setCSSVariable,
 		updateCSSVariables,

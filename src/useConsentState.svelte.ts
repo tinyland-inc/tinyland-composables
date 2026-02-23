@@ -1,9 +1,9 @@
-/**
- * Consent State Composable
- *
- * Manages consent categories, step navigation, and settings restoration
- * for GDPR-compliant consent flows.
- */
+
+
+
+
+
+
 
 import type {
 	ConsentCategories,
@@ -13,7 +13,7 @@ import type {
 } from './types.js';
 
 export function useConsentState() {
-	// Reactive state using Svelte 5 runes
+	
 	let categories = $state<ConsentCategories>({
 		essential: true,
 		preferences: false,
@@ -45,10 +45,10 @@ export function useConsentState() {
 	let currentStep = $state<ConsentStep>('welcome');
 	let restoredFromTempo = $state(false);
 
-	// Step order for navigation
+	
 	const STEP_ORDER: ConsentStep[] = ['welcome', 'privacy', 'preferences'];
 
-	// Derived state
+	
 	const canSubmit = $derived(ageVerified && categories.essential);
 	const hasPreferenceConsent = $derived(categories.preferences || categories.functional);
 	const isReturningVisitor = $derived(restoredFromTempo);
@@ -74,7 +74,7 @@ export function useConsentState() {
 		}
 	});
 
-	// Actions
+	
 	function restoreFromTempo(settings: RestorableSettings) {
 		if (settings.consentCategories) {
 			categories = { ...settings.consentCategories };
@@ -195,7 +195,7 @@ export function useConsentState() {
 	}
 
 	return {
-		// State
+		
 		get categories() {
 			return categories;
 		},
@@ -239,7 +239,7 @@ export function useConsentState() {
 			currentStep = v;
 		},
 
-		// Derived
+		
 		get canSubmit() {
 			return canSubmit;
 		},
@@ -259,7 +259,7 @@ export function useConsentState() {
 			return canProceed;
 		},
 
-		// Actions
+		
 		restoreFromTempo,
 		resetToDefaults,
 		nextStep,

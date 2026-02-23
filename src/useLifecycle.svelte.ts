@@ -1,18 +1,18 @@
-/**
- * Lifecycle Management Composable
- *
- * Auto-cleanup lifecycle management using Svelte 5 patterns.
- * Provides safe wrappers for timers, event listeners, observers,
- * and other resources that require cleanup on component destroy.
- */
+
+
+
+
+
+
+
 
 import { onMount, onDestroy } from 'svelte';
 import { browser } from './browser.js';
 
-// Cleanup function type
+
 type CleanupFunction = () => void;
 
-// Event listener options
+
 interface EventOptions extends AddEventListenerOptions {
 	target?: EventTarget;
 }
@@ -29,7 +29,7 @@ export function useLifecycle() {
 		};
 	}
 
-	// Safe event listener with automatic cleanup
+	
 	function addEventListener<K extends keyof WindowEventMap>(
 		type: K,
 		listener: (event: WindowEventMap[K]) => void,
@@ -55,7 +55,7 @@ export function useLifecycle() {
 		});
 	}
 
-	// Safe setTimeout with automatic cleanup
+	
 	function setTimer(callback: () => void, delay: number): CleanupFunction {
 		if (!browser) return () => {};
 
@@ -66,7 +66,7 @@ export function useLifecycle() {
 		});
 	}
 
-	// Safe setInterval with automatic cleanup
+	
 	function setIntervalTimer(callback: () => void, interval: number): CleanupFunction {
 		if (!browser) return () => {};
 
@@ -77,7 +77,7 @@ export function useLifecycle() {
 		});
 	}
 
-	// Safe requestAnimationFrame with automatic cleanup
+	
 	function requestFrame(callback: FrameRequestCallback): CleanupFunction {
 		if (!browser) return () => {};
 
@@ -91,7 +91,7 @@ export function useLifecycle() {
 		});
 	}
 
-	// Animation loop with automatic cleanup
+	
 	function animationLoop(callback: (deltaTime: number, timestamp: number) => void): CleanupFunction {
 		if (!browser) return () => {};
 
@@ -123,7 +123,7 @@ export function useLifecycle() {
 		});
 	}
 
-	// Intersection observer with automatic cleanup
+	
 	function observeIntersection(
 		element: Element,
 		callback: (entry: IntersectionObserverEntry) => void,
@@ -142,7 +142,7 @@ export function useLifecycle() {
 		});
 	}
 
-	// Resize observer with automatic cleanup
+	
 	function observeResize(
 		element: Element,
 		callback: (entry: ResizeObserverEntry) => void
@@ -160,7 +160,7 @@ export function useLifecycle() {
 		});
 	}
 
-	// Media query listener with automatic cleanup
+	
 	function watchMediaQuery(
 		query: string,
 		callback: (matches: boolean) => void
@@ -169,7 +169,7 @@ export function useLifecycle() {
 
 		const mediaQuery = window.matchMedia(query);
 
-		// Call immediately with current state
+		
 		callback(mediaQuery.matches);
 
 		const handler = (e: MediaQueryListEvent) => callback(e.matches);
@@ -181,14 +181,14 @@ export function useLifecycle() {
 			});
 		}
 
-		// Legacy API fallback
+		
 		mediaQuery.addListener(handler);
 		return addCleanup(() => {
 			mediaQuery.removeListener(handler);
 		});
 	}
 
-	// Debounced function with automatic cleanup
+	
 	function debounce<T extends (...args: any[]) => void>(
 		fn: T,
 		delay: number
@@ -218,7 +218,7 @@ export function useLifecycle() {
 		return debounced;
 	}
 
-	// Throttled function with automatic cleanup
+	
 	function throttle<T extends (...args: any[]) => void>(
 		fn: T,
 		limit: number
@@ -258,13 +258,13 @@ export function useLifecycle() {
 		return throttled;
 	}
 
-	// Run all cleanup functions
+	
 	function cleanup() {
 		cleanupFunctions.forEach(fn => fn());
 		cleanupFunctions.clear();
 	}
 
-	// Setup lifecycle hooks
+	
 	onMount(() => {
 		mounted = true;
 	});
@@ -275,10 +275,10 @@ export function useLifecycle() {
 	});
 
 	return {
-		// State
+		
 		get mounted() { return mounted; },
 
-		// Methods
+		
 		addCleanup,
 		addEventListener,
 		setTimer,

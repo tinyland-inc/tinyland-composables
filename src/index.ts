@@ -1,11 +1,11 @@
-/**
- * @tummycrypt/tinyland-composables
- *
- * Svelte 5 rune-based composables for reactive state management,
- * lifecycle utilities, theming, and Web Worker synchronization.
- */
 
-// Types
+
+
+
+
+
+
+
 export type {
 	RGB,
 	RGBA,
@@ -20,10 +20,10 @@ export type {
 	RestorableSettings
 } from './types.js';
 
-// Browser detection
+
 export { browser } from './browser.js';
 
-// Composables
+
 export { useBulkSelection } from './useBulkSelection.svelte.js';
 export { useColorCalculations } from './useColorCalculations.svelte.js';
 export { useConsentState } from './useConsentState.svelte.js';
