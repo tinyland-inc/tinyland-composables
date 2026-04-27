@@ -8,13 +8,11 @@ Uses svelte-package instead of plain tsc because runes need the Svelte compiler.
   Monorepo:   bazel build //packages/tinyland-composables/...
 """
 
-load("@aspect_rules_js//js:defs.bzl", "js_library", "js_run_binary")
+load("@aspect_rules_js//js:defs.bzl", "js_binary", "js_library", "js_run_binary")
 load("@aspect_rules_js//npm:defs.bzl", "npm_package")
 load("@aspect_rules_ts//ts:defs.bzl", "ts_project")
-load("@npm//:@sveltejs/package/package_json.bzl", svelte_package = "bin")
-load("@npm//:defs.bzl", "npm_link_all_packages")
-load("@npm//:svelte-check/package_json.bzl", svelte_check = "bin")
-load("@npm//:vitest/package_json.bzl", vitest_bin = "bin")
+load("@tummycrypt_tinyland_composables_npm//:defs.bzl", "npm_link_all_packages")
+load("@tummycrypt_tinyland_composables_npm//:vitest/package_json.bzl", vitest_bin = "bin")
 
 # =============================================================================
 # npm link - makes node_modules available for this package
@@ -22,13 +20,17 @@ load("@npm//:vitest/package_json.bzl", vitest_bin = "bin")
 
 npm_link_all_packages(name = "node_modules")
 
-svelte_package.svelte_package_binary(
+js_binary(
     name = "svelte_package",
+    data = [":node_modules"],
+    entry_point = "scripts/bazel/run-svelte-package.mjs",
     visibility = ["//visibility:public"],
 )
 
-svelte_check.svelte_check_binary(
+js_binary(
     name = "svelte_check",
+    data = [":node_modules"],
+    entry_point = "scripts/bazel/run-svelte-check.mjs",
     visibility = ["//visibility:public"],
 )
 
@@ -85,7 +87,7 @@ npm_package(
         ":tinyland_composables",
     ],
     package = "@tummycrypt/tinyland-composables",
-    version = "0.2.3",
+    version = "0.2.4",
     visibility = ["//visibility:public"],
 )
 
@@ -129,6 +131,7 @@ js_run_binary(
         "--tsconfig",
         "tsconfig.json",
     ],
+    stdout = "typecheck.log",
     visibility = ["//visibility:public"],
 )
 
