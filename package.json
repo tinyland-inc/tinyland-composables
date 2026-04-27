@@ -1,6 +1,6 @@
 {
   "name": "@tummycrypt/tinyland-composables",
-  "version": "0.2.3",
+  "version": "0.2.4",
   "description": "Svelte 5 rune-based composables for reactive state management, lifecycle utilities, theming, and Web Worker synchronization",
   "type": "module",
   "license": "Zlib AND LicenseRef-Tinyland-Proprietary",
