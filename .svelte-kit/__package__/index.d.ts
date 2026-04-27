@@ -1,29 +1,5 @@
-
-
-
-
-
-
-
-
-export type {
-	RGB,
-	RGBA,
-	HSL,
-	ColorContrast,
-	ColorUtilities,
-	ThemeConfig,
-	ThemeState,
-	ConsentCategories,
-	ConsentStep,
-	ConsentSubmission,
-	RestorableSettings
-} from './types.js';
-
-
+export type { RGB, RGBA, HSL, ColorContrast, ColorUtilities, ThemeConfig, ThemeState, ConsentCategories, ConsentStep, ConsentSubmission, RestorableSettings } from './types.js';
 export { browser } from './browser.js';
-
-
 export { useBulkSelection } from './useBulkSelection.svelte.js';
 export { useColorCalculations } from './useColorCalculations.svelte.js';
 export { useConsentState } from './useConsentState.svelte.js';
@@ -34,11 +10,5 @@ export { useViewportTextScanner } from './useViewportTextScanner.svelte.js';
 export type { ViewportScannerOptions, UseViewportTextScannerResult } from './useViewportTextScanner.svelte.js';
 export { useWorker, useTextWorker } from './useWorker.svelte.js';
 export type { WorkerMessage, WorkerResponse, WorkerConfig } from './useWorker.svelte.js';
-export type {
-	DraftData,
-	DraftPersistenceRecord,
-	DraftPersistenceSaveInput,
-	DraftPersistenceSaveResult,
-	DraftPersistenceTarget,
-	DraftPersistenceTransport
-} from './useDraftPersistence.svelte.js';
+export type { DraftData, DraftPersistenceRecord, DraftPersistenceSaveInput, DraftPersistenceSaveResult, DraftPersistenceTarget, DraftPersistenceTransport } from './useDraftPersistence.svelte.js';
+//# sourceMappingURL=index.d.ts.map

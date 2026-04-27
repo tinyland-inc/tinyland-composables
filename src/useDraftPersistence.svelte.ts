@@ -36,9 +36,102 @@ interface DraftState {
 	localVersion: number;
 }
 
-interface DraftData {
+export interface DraftData {
 	frontmatter: Record<string, unknown>;
 	content: string;
+}
+
+export interface DraftPersistenceTarget {
+	contentType: string;
+	slug: string;
+	authorHandle: string;
+}
+
+export interface DraftPersistenceSaveInput extends DraftData {}
+
+export interface DraftPersistenceRecord extends DraftData {
+	version: number;
+	savedAt: string;
+}
+
+export interface DraftPersistenceSaveResult {
+	version: number;
+	savedAt?: string;
+}
+
+export interface DraftPersistenceTransport {
+	loadDraft(target: DraftPersistenceTarget): Promise<DraftPersistenceRecord | null>;
+	saveDraft(
+		target: DraftPersistenceTarget,
+		input: DraftPersistenceSaveInput
+	): Promise<DraftPersistenceSaveResult>;
+	deleteDraft(target: DraftPersistenceTarget): Promise<void>;
+}
+
+export function createDraftPersistenceApiTransport(
+	fetchImpl: typeof fetch = fetch
+): DraftPersistenceTransport {
+	return {
+		async loadDraft(target) {
+			const params = new URLSearchParams({
+				author: target.authorHandle,
+				type: target.contentType,
+				slug: target.slug
+			});
+			const res = await fetchImpl(`/api/drafts?${params}`);
+
+			if (!res.ok) {
+				throw new Error(`Load failed: ${res.statusText}`);
+			}
+
+			const data = await res.json();
+			if (!data.draft) return null;
+
+			return {
+				frontmatter: data.draft.frontmatter,
+				content: data.draft.content,
+				version: data.draft.version,
+				savedAt: data.draft.savedAt
+			};
+		},
+
+		async saveDraft(target, input) {
+			const res = await fetchImpl('/api/drafts', {
+				method: 'POST',
+				headers: { 'Content-Type': 'application/json' },
+				body: JSON.stringify({
+					contentType: target.contentType,
+					slug: target.slug,
+					authorHandle: target.authorHandle,
+					frontmatter: input.frontmatter,
+					content: input.content
+				})
+			});
+
+			if (!res.ok) {
+				throw new Error(`Save failed: ${res.statusText}`);
+			}
+
+			const data = await res.json();
+			return {
+				version: data.version,
+				savedAt: data.savedAt
+			};
+		},
+
+		async deleteDraft(target) {
+			const params = new URLSearchParams({
+				author: target.authorHandle,
+				type: target.contentType,
+				slug: target.slug
+			});
+			const res = await fetchImpl(`/api/drafts?${params}`, { method: 'DELETE' });
+
+			if (!res.ok) {
+				throw new Error(`Delete failed: ${res.statusText}`);
+			}
+		}
+	};
 }
 
 
@@ -55,7 +148,15 @@ export function useDraftPersistence(options: {
 	slug: string;
 	authorHandle: string;
 	queue: ReturnType<typeof useEditorQueue>;
+	transport?: DraftPersistenceTransport;
 }) {
+	const target: DraftPersistenceTarget = {
+		contentType: options.contentType,
+		slug: options.slug,
+		authorHandle: options.authorHandle
+	};
+	const transport = options.transport ?? createDraftPersistenceApiTransport();
+
 	let state = $state<DraftState>({
 		isDirty: false,
 		isSaving: false,
@@ -70,27 +171,15 @@ export function useDraftPersistence(options: {
 
 	async function loadDraft(): Promise<DraftData | null> {
 		try {
-			const params = new URLSearchParams({
-				author: options.authorHandle,
-				type: options.contentType,
-				slug: options.slug
-			});
-			const res = await fetch(`/api/drafts?${params}`);
+			const draft = await transport.loadDraft(target);
 
-			if (!res.ok) {
-				console.error('[DraftPersistence] Load failed:', res.statusText);
-				return null;
-			}
-
-			const data = await res.json();
-
-			if (data.draft) {
-				state.serverVersion = data.draft.version;
-				state.localVersion = data.draft.version;
-				state.lastSaved = new Date(data.draft.savedAt);
+			if (draft) {
+				state.serverVersion = draft.version;
+				state.localVersion = draft.version;
+				state.lastSaved = new Date(draft.savedAt);
 				return {
-					frontmatter: data.draft.frontmatter,
-					content: data.draft.content
+					frontmatter: draft.frontmatter,
+					content: draft.content
 				};
 			}
 			return null;
@@ -111,23 +200,7 @@ export function useDraftPersistence(options: {
 			execute: async () => {
 				state.isSaving = true;
 				try {
-					const res = await fetch('/api/drafts', {
-						method: 'POST',
-						headers: { 'Content-Type': 'application/json' },
-						body: JSON.stringify({
-							contentType: options.contentType,
-							slug: options.slug,
-							authorHandle: options.authorHandle,
-							frontmatter,
-							content
-						})
-					});
-
-					if (!res.ok) {
-						throw new Error(`Save failed: ${res.statusText}`);
-					}
-
-					const data = await res.json();
+					const data = await transport.saveDraft(target, { frontmatter, content });
 
 					if (data.version > state.localVersion + 1) {
 						state.hasConflict = true;
@@ -140,7 +213,7 @@ export function useDraftPersistence(options: {
 					state.localVersion = data.version;
 					state.serverVersion = data.version;
 					state.isDirty = false;
-					state.lastSaved = new Date();
+					state.lastSaved = data.savedAt ? new Date(data.savedAt) : new Date();
 				} catch (error) {
 					console.error('[DraftPersistence] Save error:', error);
 					throw error;
@@ -165,16 +238,7 @@ export function useDraftPersistence(options: {
 
 	async function deleteDraft(): Promise<void> {
 		try {
-			const params = new URLSearchParams({
-				author: options.authorHandle,
-				type: options.contentType,
-				slug: options.slug
-			});
-			const res = await fetch(`/api/drafts?${params}`, { method: 'DELETE' });
-
-			if (!res.ok) {
-				throw new Error(`Delete failed: ${res.statusText}`);
-			}
+			await transport.deleteDraft(target);
 
 			state.isDirty = false;
 			state.lastSaved = null;
